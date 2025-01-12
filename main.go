@@ -10,6 +10,7 @@ import (
 
 func main() {
 	server := NewServer()
+	log.Println("server listening on port 3000...")
 	if err := http.ListenAndServe("localhost:3000", server); err != nil {
 		log.Fatal(err)
 	}
@@ -61,8 +62,9 @@ func fetchHTML(url string) ([]byte, error) {
 }
 
 func NewServer() *http.ServeMux {
-	m := http.ServeMux{}
-	m.HandleFunc("/find", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.ServeMux{}
+	methods := Methods{}
+	mux.HandleFunc("/find", methods.POST(func(w http.ResponseWriter, r *http.Request) {
 		bytesTokenLimit := 9216
 		//parse the product information from the url
 		req, err := decodeRequest(r)
@@ -84,7 +86,22 @@ func NewServer() *http.ServeMux {
 		//fetch the html from the web site
 		//if the site is not available respond accordingly
 		//if it is available, forward the content to an LLM with a large enough context window
-	})
+	}))
 
-	return &m
+	return &mux
+}
+
+type Methods struct{}
+
+func checkMethod(method string, f func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != method {
+			http.Error(w, "Method not allowed", 400)
+			return
+		}
+		f(w, r)
+	}
+}
+func (m Methods) POST(f func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
+	return checkMethod("POST", f)
 }
