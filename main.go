@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 
 func main() {
 	server := NewServer()
-	if err := http.ListenAndServe("localhost:5000", server); err != nil {
+	if err := http.ListenAndServe("localhost:3000", server); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -22,7 +23,7 @@ type FindRequest struct {
 func decodeRequest(request *http.Request) (*FindRequest, error) {
 	findRequest := FindRequest{}
 	if err := json.NewDecoder(request.Body).Decode(&findRequest); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid request data please provide url && attributes")
 	} else {
 		return &findRequest, nil
 	}
@@ -67,7 +68,7 @@ func NewServer() *http.ServeMux {
 		req, err := decodeRequest(r)
 		if err != nil {
 			//write response
-			encodeResponse(err, w, 500)
+			encodeResponse(err, w, 400)
 			return
 		}
 		respBytes, err := fetchHTML(req.Url)
