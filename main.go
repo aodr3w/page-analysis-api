@@ -2,18 +2,36 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/aodr3w/extractor-api/llm"
 )
 
 func main() {
-	server := NewServer()
-	log.Println("server listening on port 3000...")
-	if err := http.ListenAndServe("localhost:3000", server); err != nil {
-		log.Fatal(err)
+	ss := flag.Bool("server", false, "supply to start server")
+	bot := flag.Bool("bot", false, "supply to start llm server")
+	flag.Parse()
+
+	if *ss {
+		server := NewServer()
+		log.Println("server listening on port 3000...")
+		if err := http.ListenAndServe("localhost:3000", server); err != nil {
+			log.Fatal(err)
+		}
+	} else if *bot {
+		log.Println("starting bot process")
+		response, err := llm.Prompt("hello world")
+		if err != nil {
+			log.Printf("[LLM Error] %v\n", err)
+		} else {
+			log.Printf("[LLM]: %v", response)
+		}
 	}
+
 }
 
 type FindRequest struct {
