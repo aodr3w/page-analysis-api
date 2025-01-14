@@ -7,13 +7,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-
-	"github.com/aodr3w/extractor-api/llm"
 )
 
 func main() {
 	ss := flag.Bool("server", false, "supply to start server")
-	bot := flag.Bool("bot", false, "supply to start llm server")
 	flag.Parse()
 
 	if *ss {
@@ -21,14 +18,6 @@ func main() {
 		log.Println("server listening on port 3000...")
 		if err := http.ListenAndServe("localhost:3000", server); err != nil {
 			log.Fatal(err)
-		}
-	} else if *bot {
-		log.Println("starting bot process")
-		response, err := llm.Prompt("hello world")
-		if err != nil {
-			log.Printf("[LLM Error] %v\n", err)
-		} else {
-			log.Printf("[LLM]: %v", response)
 		}
 	}
 
