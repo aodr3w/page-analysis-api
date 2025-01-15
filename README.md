@@ -75,9 +75,10 @@ Example Response:
 	Note: The output will vary based on the LLM in use and the content of the provided page.
 
 Notes
+
 •	You can configure which LLM (model) Ollama uses by modifying the Go client code (llm.NewClient()).
+
 •	If you want to extract only certain parts of the HTML (e.g., <body>), you can modify the fetching logic in fetchHTML or use an HTML parser for more robust parsing.
+
 •	The above example shows a simplified prompt and response. Actual usage can involve more complex instructions or formatting for the LLM.
 
-Enjoy exploring the Page Analysis API!
-If you encounter any issues or have suggestions, feel free to open a pull request or create an issue in the repository.
