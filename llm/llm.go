@@ -9,12 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aodr3w/page-analysis-api/common"
+	"github.com/aodr3w/page-analysis-api/data"
 )
 
-// handle starting the ollama process
-// reads messages from rabbitmq queue
-// writes to ollama process and then send response back a response queue
 type LLMClient struct {
 	model string
 }
@@ -40,7 +37,7 @@ func (c *LLMClient) SendMsg(msg string, w http.ResponseWriter) {
 
 	payload, err := json.Marshal(body)
 	if err != nil {
-		common.EncodeResponse([]byte(fmt.Sprintf("error marshalling body %v", err)), w, http.StatusInternalServerError)
+		data.EncodeResponse([]byte(fmt.Sprintf("error marshalling body %v", err)), w, http.StatusInternalServerError)
 		return
 	}
 	response, err := http.Post(
@@ -49,7 +46,7 @@ func (c *LLMClient) SendMsg(msg string, w http.ResponseWriter) {
 		bytes.NewBuffer(payload),
 	)
 	if err != nil {
-		common.EncodeResponse(fmt.Sprintf("error sending llm request: %v\n", err), w, http.StatusInternalServerError)
+		data.EncodeResponse(fmt.Sprintf("error sending llm request: %v\n", err), w, http.StatusInternalServerError)
 		return
 	}
 	defer response.Body.Close()
@@ -61,12 +58,12 @@ func (c *LLMClient) SendMsg(msg string, w http.ResponseWriter) {
 		if err := decoder.Decode(&llmResponse); err == io.EOF {
 			break
 		} else if err != nil {
-			common.EncodeResponse(fmt.Sprintf("Error decoding LLM response: %v", err), w, http.StatusInternalServerError)
+			data.EncodeResponse(fmt.Sprintf("Error decoding LLM response: %v", err), w, http.StatusInternalServerError)
 			return
 		}
 		if content, exists := llmResponse.Message["content"]; exists {
 			result.WriteString(content)
 		}
 	}
-	common.EncodeResponse(result.String(), w, http.StatusOK)
+	data.EncodeResponse(result.String(), w, http.StatusOK)
 }

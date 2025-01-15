@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/aodr3w/page-analysis-api/common"
+	"github.com/aodr3w/page-analysis-api/data"
 	"github.com/aodr3w/page-analysis-api/llm"
 )
 
@@ -64,12 +64,12 @@ func NewServer() *http.ServeMux {
 	mux.HandleFunc("/find", methods.POST(func(w http.ResponseWriter, r *http.Request) {
 		req, err := decodeRequest(r)
 		if err != nil {
-			common.EncodeResponse(err, w, 400)
+			data.EncodeResponse(err, w, 400)
 			return
 		}
 		respBytes, err := fetchHTML(req.Url)
 		if err != nil {
-			common.EncodeResponse(err, w, 500)
+			data.EncodeResponse(err, w, 500)
 		}
 		prompt := fmt.Sprintf(
 			"retrieve the product attribute values available in the script type=text/x-magento-init and respond only with {'attribute':'value'} from provided text %v",
