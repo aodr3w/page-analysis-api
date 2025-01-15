@@ -1,4 +1,4 @@
-Below is a formatted README.md that you can place at the root of your project, providing clear instructions and context:
+Here’s the correctly formatted README.md for your project:
 
 Page Analysis API
 
@@ -31,7 +31,7 @@ Installation
 git clone https://github.com/aodr3w/page-analysis-api
 
 
-	2.	Change directory:
+	2.	Change to the project directory:
 
 cd page-analysis-api
 
@@ -55,7 +55,9 @@ curl -X POST http://localhost:3000/find \
 
 Example Response:
 
-{"data":"This is a HTML code snippet for a webpage. It includes ..."}
+{
+  "data": "This is a HTML code snippet for a webpage. It includes various JavaScript files and references to different plugins and features used on the website, such as the EasyPieChart plugin, jQuery, WordPress Simple Firewall, Page Links To, and more. The page also includes a Not Bot Shield protection feature to prevent automated attacks."
+}
 
 	Note: The output will vary based on the LLM in use and the content of the provided page.
 
@@ -64,4 +66,7 @@ Notes
 	•	If you want to extract only certain parts of the HTML (e.g., <body>), you can modify the fetching logic in fetchHTML or use an HTML parser for more robust parsing.
 	•	The above example shows a simplified prompt and response. Actual usage can involve more complex instructions or formatting for the LLM.
 
-Enjoy exploring the Page Analysis API! If you encounter any issues or have suggestions, feel free to open a pull request or create an issue in the repository.
+Enjoy exploring the Page Analysis API!
+If you encounter any issues or have suggestions, feel free to open a pull request or create an issue in the repository.
+
+This structure is clean, professional, and Markdown-friendly for rendering on GitHub or other platforms.
