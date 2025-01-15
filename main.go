@@ -81,9 +81,6 @@ func NewServer() *http.ServeMux {
 
 		client.SendMsg(fmt.Sprintf("%s, page_text: %v", prefix, string(respBytes)), w)
 
-		//fetch the html from the web site
-		//if the site is not available respond accordingly
-		//if it is available, forward the content to an LLM with a large enough context window
 	}))
 
 	return &mux
