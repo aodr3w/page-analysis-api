@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -18,15 +17,10 @@ var (
 )
 
 func main() {
-	ss := flag.Bool("server", false, "supply to start server")
-	flag.Parse()
-
-	if *ss {
-		server := NewServer()
-		log.Println("server listening on port 3000...")
-		if err := http.ListenAndServe("localhost:3000", server); err != nil {
-			log.Fatal(err)
-		}
+	server := NewServer()
+	log.Println("server listening on port 3000...")
+	if err := http.ListenAndServe("localhost:3000", server); err != nil {
+		log.Fatal(err)
 	}
 
 }
