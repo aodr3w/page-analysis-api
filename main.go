@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/aodr3w/extractor-api/common"
 	"github.com/aodr3w/extractor-api/llm"
@@ -61,7 +62,7 @@ func NewServer() *http.ServeMux {
 	mux := http.ServeMux{}
 	methods := Methods{}
 	mux.HandleFunc("/find", methods.POST(func(w http.ResponseWriter, r *http.Request) {
-		bytesTokenLimit := 9216
+		// bytesTokenLimit := 9216
 		//parse the product information from the url
 		req, err := decodeRequest(r)
 		if err != nil {
@@ -74,12 +75,14 @@ func NewServer() *http.ServeMux {
 			//write response
 			common.EncodeResponse(err, w, 500)
 		}
-		if len(respBytes) > bytesTokenLimit {
-			respBytes = respBytes[:bytesTokenLimit]
-		}
-		prefix := "extract the main product details from the `page_text` and return them as key value pairs in json format"
+		// if len(respBytes) > bytesTokenLimit {
+		// 	respBytes = respBytes[:bytesTokenLimit]
+		// }
+		prompt := fmt.Sprintf(
+			"retrieve the product attribute values available in the script type=text/x-magento-init and respond only with {'attribute':'value'} from provided text %v",
+			strings.TrimSpace(string(respBytes)))
 
-		client.SendMsg(fmt.Sprintf("%s, page_text: %v", prefix, string(respBytes)), w)
+		client.SendMsg(prompt, w)
 
 	}))
 

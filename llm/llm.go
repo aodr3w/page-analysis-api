@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/aodr3w/extractor-api/common"
 )
@@ -15,6 +17,12 @@ import (
 // writes to ollama process and then send response back a response queue
 type LLMClient struct {
 	model string
+}
+
+type LLMResponse struct {
+	Model     string            `json:"model"`
+	CreatedAt time.Time         `json:"created_at"`
+	Message   map[string]string `json:"message"`
 }
 
 func NewClient() *LLMClient {
@@ -46,12 +54,19 @@ func (c *LLMClient) SendMsg(msg string, w http.ResponseWriter) {
 	}
 	defer response.Body.Close()
 
-	var buffer bytes.Buffer
-	_, err = io.Copy(&buffer, response.Body)
-	if err != nil {
-		common.EncodeResponse(fmt.Sprintf("error reading LLM response: %v", err), w, http.StatusInternalServerError)
-		return
+	var result strings.Builder
+	decoder := json.NewDecoder(response.Body)
+	for {
+		llmResponse := LLMResponse{}
+		if err := decoder.Decode(&llmResponse); err == io.EOF {
+			break
+		} else if err != nil {
+			common.EncodeResponse(fmt.Sprintf("Error decoding LLM response: %v", err), w, http.StatusInternalServerError)
+			return
+		}
+		if content, exists := llmResponse.Message["content"]; exists {
+			result.WriteString(content)
+		}
 	}
-
-	common.EncodeResponse(buffer.String(), w, http.StatusOK)
+	common.EncodeResponse(result.String(), w, http.StatusOK)
 }
