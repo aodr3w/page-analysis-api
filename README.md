@@ -16,26 +16,29 @@ Table of Contents
 Overview
 
 This API demonstrates how to:
-	1.	Accept a POST request with a JSON payload containing a URL.
-	2.	Fetch the HTML content from the provided URL.
-	3.	Send that content to an Ollama server for text analysis.
-	4.	Return the analysis response to the client.
+1.	Accept a POST request with a JSON payload containing a URL.
+2.	Fetch the HTML content from the provided URL.
+3.	Send that content to an Ollama server for text analysis.
+4.	Return the analysis response to the client.
 
 Prerequisites
-	•	Go (1.18+ recommended)
-	•	Git
-	•	An Ollama server running locally or remotely. (Installation instructions at ollama.ai)
+•	Go (1.18+ recommended)
+•	Git
+•	An Ollama server running locally or remotely. (Installation instructions at ollama.ai)
 
 Installation
 
-	1.	Clone this repository:
+1.	Clone this repository:
 
+```
 git clone https://github.com/aodr3w/page-analysis-api
+```
 
+2.	Change to the project directory:
 
-	2.	Change to the project directory:
-
+```
 cd page-analysis-api
+```
 
 Running
 
