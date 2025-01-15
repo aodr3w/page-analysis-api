@@ -7,6 +7,13 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/aodr3w/extractor-api/common"
+	"github.com/aodr3w/extractor-api/llm"
+)
+
+var (
+	client = llm.NewClient()
 )
 
 func main() {
@@ -37,24 +44,6 @@ func decodeRequest(request *http.Request) (*FindRequest, error) {
 	}
 }
 
-func encodeResponse(payload interface{}, w http.ResponseWriter, status int) {
-	resp := make(map[string]interface{}, 0)
-	if 200 <= status && status <= 300 {
-		resp["data"] = payload
-	} else {
-		if err, ok := payload.(error); ok {
-			resp["error"] = err.Error()
-		} else {
-			resp["error"] = payload
-		}
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-
-	if err := json.NewEncoder(w).Encode(resp); err != nil {
-		log.Printf("Error encoding json response: %v\n", err)
-	}
-}
 func fetchHTML(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -77,18 +66,20 @@ func NewServer() *http.ServeMux {
 		req, err := decodeRequest(r)
 		if err != nil {
 			//write response
-			encodeResponse(err, w, 400)
+			common.EncodeResponse(err, w, 400)
 			return
 		}
 		respBytes, err := fetchHTML(req.Url)
 		if err != nil {
 			//write response
-			encodeResponse(err, w, 500)
+			common.EncodeResponse(err, w, 500)
 		}
 		if len(respBytes) > bytesTokenLimit {
 			respBytes = respBytes[:bytesTokenLimit]
 		}
-		encodeResponse(string(respBytes), w, 200)
+		prefix := "extract the main product details from the `page_text` and return them as key value pairs in json format"
+
+		client.SendMsg(fmt.Sprintf("%s, page_text: %v", prefix, string(respBytes)), w)
 
 		//fetch the html from the web site
 		//if the site is not available respond accordingly
@@ -103,7 +94,7 @@ type Methods struct{}
 func checkMethod(method string, f func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != method {
-			http.Error(w, "Method not allowed", 400)
+			http.Error(w, "Method not allowed", http.StatusBadRequest)
 			return
 		}
 		f(w, r)

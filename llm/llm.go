@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+
+	"github.com/aodr3w/extractor-api/common"
 )
 
 // handle starting the ollama process
@@ -18,7 +21,7 @@ func NewClient() *LLMClient {
 	return &LLMClient{"dolphin-llama3:latest"}
 }
 
-func (c *LLMClient) sendMsg(msg string, w http.ResponseWriter) {
+func (c *LLMClient) SendMsg(msg string, w http.ResponseWriter) {
 	//this message should stream the data back to the client
 	body := map[string]interface{}{
 		"model": c.model,
@@ -29,8 +32,7 @@ func (c *LLMClient) sendMsg(msg string, w http.ResponseWriter) {
 
 	payload, err := json.Marshal(body)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("error marshalling body %v", err)))
-		w.WriteHeader(500)
+		common.EncodeResponse([]byte(fmt.Sprintf("error marshalling body %v", err)), w, http.StatusInternalServerError)
 		return
 	}
 	response, err := http.Post(
@@ -39,9 +41,17 @@ func (c *LLMClient) sendMsg(msg string, w http.ResponseWriter) {
 		bytes.NewBuffer(payload),
 	)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("error sending llm request: %v\n", err)))
-		w.WriteHeader(500)
+		common.EncodeResponse(fmt.Sprintf("error sending llm request: %v\n", err), w, http.StatusInternalServerError)
+		return
 	}
-	//TODO handle response
 	defer response.Body.Close()
+
+	var buffer bytes.Buffer
+	_, err = io.Copy(&buffer, response.Body)
+	if err != nil {
+		common.EncodeResponse(fmt.Sprintf("error reading LLM response: %v", err), w, http.StatusInternalServerError)
+		return
+	}
+
+	common.EncodeResponse(buffer.String(), w, http.StatusOK)
 }
