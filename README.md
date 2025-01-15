@@ -28,16 +28,17 @@ This API demonstrates how to:
 
 1. **Go** (1.18+ recommended)  
 2. **Git**  
-3. An **Ollama** server running locally or remotely. (Installation instructions at [ollama.ai](https://ollama.ai/))
+3. An **Ollama** server running locally or remotely. (Installation instructions at [ollama.com](https://ollama.com/))
 
 ---
 
 ## Installation
 
 1. Clone this repository:
-   ```
-   git clone https://github.com/aodr3w/page-analysis-api
-   ```
+
+```
+git clone https://github.com/aodr3w/page-analysis-api
+```
 
 2. Change to the project directory:
 
