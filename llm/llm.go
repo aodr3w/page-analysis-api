@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aodr3w/extractor-api/common"
+	"github.com/aodr3w/page-analysis-api/common"
 )
 
 // handle starting the ollama process

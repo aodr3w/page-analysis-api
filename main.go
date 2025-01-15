@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/aodr3w/extractor-api/common"
-	"github.com/aodr3w/extractor-api/llm"
+	"github.com/aodr3w/page-analysis-api/common"
+	"github.com/aodr3w/page-analysis-api/llm"
 )
 
 var (
