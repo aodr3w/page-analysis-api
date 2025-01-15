@@ -22,9 +22,9 @@ This API demonstrates how to:
 4.	Return the analysis response to the client.
 
 Prerequisites
-•	Go (1.18+ recommended)
-•	Git
-•	An Ollama server running locally or remotely. (Installation instructions at ollama.ai)
+• Go (1.18+ recommended)
+• Git
+• An Ollama server running locally or remotely. (Installation instructions at ollama.ai)
 
 Installation
 
