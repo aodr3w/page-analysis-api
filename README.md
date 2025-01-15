@@ -72,14 +72,13 @@ Example Response:
 
 ```
 
-
-Note: The output will vary based on the LLM in use and the content of the provided page.
-
 Notes
 
-•	You can configure which LLM (model) Ollama uses by modifying the Go client code (llm.NewClient()).
+*  The output will vary based on the LLM in use and the content of the provided page.
 
-•	If you want to extract only certain parts of the HTML (e.g., <body>), you can modify the fetching logic in fetchHTML or use an HTML parser for more robust parsing.
+*	You can configure which LLM (model) Ollama uses by modifying the Go client code (llm.NewClient()).
 
-•	The above example shows a simplified prompt and response. Actual usage can involve more complex instructions or formatting for the LLM.
+*	If you want to extract only certain parts of the HTML (e.g., <body>), you can modify the fetching logic in fetchHTML or use an HTML parser for more robust parsing.
+
+*	The above example shows a simplified prompt and response. Actual usage can involve more complex instructions or formatting for the LLM.
 
