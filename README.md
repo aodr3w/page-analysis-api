@@ -72,7 +72,8 @@ Example Response:
 
 ```
 
-	Note: The output will vary based on the LLM in use and the content of the provided page.
+
+Note: The output will vary based on the LLM in use and the content of the provided page.
 
 Notes
 
