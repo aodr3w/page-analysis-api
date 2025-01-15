@@ -58,7 +58,7 @@ go run main.go
 
 ## Usage
 
-After the server starts, you can make a POST request to /find:
+After the server starts, you can make a POST request to `/find:`
 
 ```
 curl -X POST http://localhost:3000/find \
